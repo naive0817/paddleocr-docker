@@ -45,26 +45,31 @@ CHECK_MODEL() {
             echo "Downloading $DET model..."
             wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/$DET.tar -P $MODEL_DIR
             tar -xf $MODEL_DIR/$DET.tar -C $MODEL_DIR
+            rm -rf $MODEL_DIR/$DET.tar
             ;;
         $REC)
             echo "Downloading $REC model..."
             wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/$REC.tar -P $MODEL_DIR
             tar -xf $MODEL_DIR/$REC.tar -C $MODEL_DIR
+            rm -rf $MODEL_DIR/$REC.tar
             ;;
         $CLS)
             echo "Downloading $CLS model..."
             wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/$CLS.tar -P $MODEL_DIR
             tar -xf $MODEL_DIR/$CLS.tar -C $MODEL_DIR
+            rm -rf $MODEL_DIR/$CLS.tar
             ;;
         $SER)
             echo "Downloading $SER model..."
             wget https://paddleocr.bj.bcebos.com/ppstructure/models/vi_layoutxlm/$SER.tar -P $MODEL_DIR
             tar -xf $MODEL_DIR/$SER.tar -C $MODEL_DIR
+            rm -rf $MODEL_DIR/$SER.tar
             ;;
         $RE)
             echo "Downloading $RE model..."
             wget https://paddleocr.bj.bcebos.com/ppstructure/models/vi_layoutxlm/$RE.tar -P $MODEL_DIR
             tar -xf $MODEL_DIR/$RE.tar -C $MODEL_DIR
+            rm -rf $MODEL_DIR/$RE.tar
             ;;
         *)
             echo "Unknown model: $1"
@@ -81,6 +86,15 @@ CHECK_MODEL $SER
 CHECK_MODEL $RE
 
 # 修改PaddleOCR的配置文件, 替换模型
+
+# 修改ocr_det/params.py
+sed -i 's#det_model_dir.*$#det_model_dir = "./inference/'$DET'/"#' PaddleOCR/deploy/hubserving/ocr_det/params.py
+
+# 修改ocr_rec/params.py
+sed -i 's#rec_model_dir.*$#rec_model_dir = "./inference/'$REC'/"#' PaddleOCR/deploy/hubserving/ocr_rec/params.py
+
+# 修改ocr_cls/params.py
+sed -i 's#cls_model_dir.*$#cls_model_dir = "./inference/'$CLS'/"#' PaddleOCR/deploy/hubserving/ocr_cls/params.py
 
 # 修改ocr_system/params.py
 sed -i 's#det_model_dir.*$#det_model_dir = "./inference/'$DET'/"#' PaddleOCR/deploy/hubserving/ocr_system/params.py
